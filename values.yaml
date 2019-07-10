@@ -1,4 +1,4 @@
-# Default values for ..
+# Default values for nginx-helm-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -6,8 +6,13 @@ replicaCount: 1
 
 image:
   repository: 177865682799.dkr.ecr.eu-central-1.amazonaws.com/nginx-sample
-  tag: latest
-  pullPolicy: IfNotPresent
+  tag: commit-9efab80d
+  pullPolicy: Always
+  canary:
+    enabled: true
+    enabledd: false
+    repository: 177865682799.dkr.ecr.eu-central-1.amazonaws.com/nginx-sample
+    tag: latest
 
 nameOverride: ""
 fullnameOverride: ""
@@ -17,22 +22,20 @@ service:
   port: 80
 
 ingress:
-  enabled: false
+  enabled: true
   annotations: 
     traefik.ingress.kubernetes.io/service-weights: |
-      service1: 90%
-      service-canary: 10%
+      nginx-example-nginx-helm-chart: 50%
+      nginx-example-nginx-helm-chart-canary: 50%
     kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/frontend-entry-points: http
+    traefik.ingress.kubernetes.io/redirect-entry-point: http
     # kubernetes.io/tls-acme: "true"
   paths: 
-    - backend:
-        serviceName: service1
-        servicePort: 80
-    - backend:
-        serviceName: service-canary
-        servicePort: 80
+    - /
   hosts:
-    - nginx-sample.dev.mgmt.aws-arvato.com.
+    - nginxsample.dev.mgmt.aws-arvato.com
+
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

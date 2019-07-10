@@ -1,16 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-{{- if .Values.service.annotations }}
-  annotations:
-  {{- range $key, $value := .Values.service.annotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-  name: {{ include "..fullname" . }}
+  name: {{ include "nginx-helm-chart.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "..name" . }}
-    helm.sh/chart: {{ include "..chart" . }}
+    app.kubernetes.io/name: {{ include "nginx-helm-chart.name" . }}
+    helm.sh/chart: {{ include "nginx-helm-chart.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
@@ -21,5 +15,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: {{ include "..name" . }}
+    app.kubernetes.io/name: {{ include "nginx-helm-chart.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
